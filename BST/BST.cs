@@ -16,11 +16,12 @@ namespace BST
         public BST(T rootValue)
         {
             root = new Node<T>(rootValue);
+            count = 1;
         }
 
 
 
-        void Insert(T value)
+        public void Insert(T value)
         {
             if (value == null)
             {
@@ -29,12 +30,14 @@ namespace BST
             if (count == 0)
             {
                 root = new Node<T>(value);
+                count++;
+                return;
             }
             
             Node<T> curr = root;
             while (true)
             {
-                if (value.CompareTo(curr.Value) == 0)
+                if (value.CompareTo(curr.Value) == 0 && curr != root)
                 {
                     throw new DuplicateKeyException("Inserted Duplicate");
                 }
@@ -68,7 +71,7 @@ namespace BST
         }
 
 
-        Node<T> Search(T value)
+        public Node<T> Search(T value)
         {
             if (value == null)
             {
@@ -99,7 +102,7 @@ namespace BST
             return null;
         }
 
-        bool Contains(T value)
+        public bool Contains(T value)
         {
             return Search(value) != null;
         }
