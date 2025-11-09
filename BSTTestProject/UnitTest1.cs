@@ -111,6 +111,21 @@ namespace BSTTestProject
         }
 
         [Theory]
-        [InlineData()]
+        [InlineData(5, 2, 7, 4, 6, 8, 10)]
+        public void RemovalTest(params int[] numbers)
+        {
+            BST<int> bst = new BST<int>();
+            for (int i = 0; i < numbers.Length; i++)
+            {
+                bst.Insert(numbers[i]);
+            }
+            for (int i = 0; i < numbers.Length; i++)
+            {
+                Assert.True(bst.Contains(numbers[i]));
+                bst.Remove(numbers[i]);
+                Assert.False(bst.Contains(numbers[i]));
+            }
+
+        }
     }
 }

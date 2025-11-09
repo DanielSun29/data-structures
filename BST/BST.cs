@@ -37,7 +37,7 @@ namespace BST
                 count++;
                 return;
             }
-            
+
             Node<T> curr = root;
             while (true)
             {
@@ -256,28 +256,41 @@ namespace BST
         public bool Remove(T value)
         {
             if (value == null) throw new NullReferenceException("value to remove is null");
-            if (root == null) return false;
+            if (root == null) throw new NullReferenceException("root is null");
             Node<T> curr = root;
 
             if (root.Value.Equals(value))
             {
                 root = Remove(root);
+                count--;
+                return true;
             }
 
             while (true)
             {
                 if (value.CompareTo(curr.Value) < 0)
                 {
-                    curr = curr.Left;
+                    if (curr.Left.Value.Equals(value))
+                    {
+                        curr.Left = Remove(curr.Left);
+                        return true;
+                    }
+                    else
+                    {
+                        curr = curr.Left;
+                    }
                 }
                 else if (value.CompareTo(curr.Value) > 0)
                 {
-                    curr = curr.Right;
-                }
-                else if (curr.Value.Equals(value))
-                {
-                    curr = Remove(curr);
-                    return true;
+                    if (curr.Right.Value.Equals(value))
+                    {
+                        curr.Right = Remove(curr.Right);
+                        return true;
+                    }
+                    else
+                    {
+                        curr = curr.Right;
+                    }
                 }
                 else if (curr == null)
                 {
@@ -295,9 +308,25 @@ namespace BST
             if (nodeToRemove.Left == null) return nodeToRemove.Right;
             if (nodeToRemove.Right == null) return nodeToRemove.Left;
 
-            Node<T> largestSmallerNode = Search(Maximum(nodeToRemove.Left));
-            nodeToRemove.Value = largestSmallerNode.Value;
-            largestSmallerNode = largestSmallerNode.Left;
+            //Node<T> largestSmallerNode = Search(Maximum(nodeToRemove.Left));
+            //nodeToRemove.Value = largestSmallerNode.Value;
+            //largestSmallerNode = largestSmallerNode.Left;
+            Node<T> curr = nodeToRemove.Left;
+            Node<T> parent = nodeToRemove;
+            while (curr.Right != null)
+            {
+                parent = curr;
+                curr = curr.Right;
+            }
+            nodeToRemove.Value = curr.Value;
+            if (parent == nodeToRemove)
+            {
+                nodeToRemove.Left = nodeToRemove.Left.Left;
+            }
+            else
+            {
+                parent.Right = curr.Left;
+            }
             return nodeToRemove;
         }
     }
