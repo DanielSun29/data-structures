@@ -13,6 +13,10 @@ namespace BST
 
         public Node<T> root;
 
+        public BST()
+        {
+        }
+
         public BST(T rootValue)
         {
             root = new Node<T>(rootValue);
@@ -232,7 +236,7 @@ namespace BST
             Stack<Node<T>> movement = new Stack<Node<T>>();
             Queue<T> output = new Queue<T>();
             Node<T> curr = root;
-            while (true)
+            while (count != output.Count)
             {
                 if (curr != null)
                 {
@@ -246,6 +250,7 @@ namespace BST
                     curr = curr.Right;
                 }
             }
+            return output.ToArray();
         }//Returns node values in In-Order
 
         public bool Remove(T value)

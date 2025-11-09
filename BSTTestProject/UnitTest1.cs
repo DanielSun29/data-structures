@@ -5,10 +5,10 @@ namespace BSTTestProject
     public class UnitTest1
     {
         [Theory]
-        [InlineData(2, 4, 6, 8, 10)]
+        [InlineData(5, 2, 4, 6, 8, 10)]
         public void InsertTest(params int[] numbers)
         {
-            BST<int> bst = new BST<int>(5);
+            BST<int> bst = new BST<int>();
             for (int i = 0; i < numbers.Length; i++)
             {
                 bst.Insert(numbers[i]);
@@ -17,10 +17,10 @@ namespace BSTTestProject
         }
 
         [Theory]
-        [InlineData(2, 4, 6, 8, 10)]
+        [InlineData(5, 2, 4, 6, 8, 10)]
         public void ContainsTest(params int[] numbers)
         {
-            BST<int> bst = new BST<int>(5);
+            BST<int> bst = new BST<int>();
             for (int i = 0; i < numbers.Length; i++)
             {
                 bst.Insert(numbers[i]);
@@ -33,10 +33,10 @@ namespace BSTTestProject
         }
 
         [Theory]
-        [InlineData(2, 4, 6, 8, 10)]
+        [InlineData(5, 2, 4, 6, 8, 10)]
         public void NullInsertTest(params int[] numbers)
         {
-            BST<string> bst = new BST<string>("5");
+            BST<string> bst = new BST<string>();
             foreach (var number in numbers)
             {
                 bst.Insert(number.ToString());
@@ -45,38 +45,37 @@ namespace BSTTestProject
         }
 
         [Theory]
-        [InlineData(2, 4, 6, 8, 10)]
+        [InlineData(5, 2, 4, 6, 8, 10)]
         public void CountTest(params int[] numbers)
         {
-            BST<int> bst = new BST<int>(5);
+            BST<int> bst = new BST<int>();
             for (int i = 0; i < numbers.Length; i++)
             {
                 bst.Insert(numbers[i]);
             }
-            Assert.Equal(numbers.Length + 1, bst.count); // +1 for the root node
+            Assert.Equal(numbers.Length, bst.count);
         }
 
         [Theory]
-        [InlineData(2, 4, 6, 8, 10)]
+        [InlineData(5, 2, 4, 6, 8, 10)]
         public void InOrderTraversalTest(params int[] numbers)
         {
-            BST<int> bst = new BST<int>(5);
+            BST<int> bst = new BST<int>();
             for (int i = 0; i < numbers.Length; i++)
             {
                 bst.Insert(numbers[i]);
             }
             var traversalResult = bst.InOrder();
             var expected = new List<int>(numbers);
-            expected.Add(5); // Adding the root value
             expected.Sort();
             Assert.Equal(expected, traversalResult);
         }
 
         [Theory]
-        [InlineData(new int[] { 5,2,6,4,8,10},2, 4, 6, 8, 10)]
-        public void LevelOrderTraversalTest(int[] correctOrder,params int[] numbers)
+        [InlineData(new int[] {5,2,6,4,8,10}, 5, 2, 4, 6, 8, 10)]
+        public void LevelOrderTraversalTest(int[] correctOrder, params int[] numbers)
         {
-            BST<int> bst = new BST<int>(5);
+            BST<int> bst = new BST<int>();
             for (int i = 0; i < numbers.Length; i++)
             {
                 bst.Insert(numbers[i]);
@@ -84,5 +83,34 @@ namespace BSTTestProject
             var traversalResult = bst.LevelOrder();
             Assert.Equal(correctOrder, traversalResult);
         }
+
+        [Theory]
+        [InlineData(new int[] { 5, 2, 4, 8, 6, 7, 10 }, 5, 2, 4, 8, 6, 7, 10)]
+        public void PreOrderTraversalTest(int[] correctOrder, params  int[] numbers)
+        {
+            BST<int> bst = new BST<int>();
+            for (int i = 0; i < numbers.Length; i++)
+            {
+                bst.Insert(numbers[i]);
+            }
+            var traversalResult = bst.PreOrder();
+            Assert.Equal(correctOrder, traversalResult);
+        }
+
+        [Theory]
+        [InlineData(new int[] { 4, 2, 6, 10, 8, 7, 5 }, 5, 2, 7, 4, 6, 8, 10)]
+        public void PostOrderTraversalTest(int[] correctOrder, params int[] numbers)
+        {
+            BST<int> bst = new BST<int>();
+            for (int i = 0; i < numbers.Length; i++)
+            {
+                bst.Insert(numbers[i]);
+            }
+            var traversalResult = bst.PostOrder();
+            Assert.Equal(correctOrder, traversalResult);
+        }
+
+        [Theory]
+        [InlineData()]
     }
 }
