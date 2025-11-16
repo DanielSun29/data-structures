@@ -175,6 +175,49 @@ namespace BST
             return output.ToArray();
         }//Returns node values in Level-Order
 
+        public List<T> PreOrderRec(Node<T> curr)
+        {
+            List<T> list = new List<T>();
+            if (curr == null)
+            {
+                return list;
+            }
+            //parent
+            list.Add(curr.Value);
+            //left
+            list.AddRange(PreOrderRec(curr.Left));
+            //right
+            list.AddRange(PreOrderRec(curr.Right));
+            //list.AddRange(); = add list to another list
+            return list;
+        }
+
+        public List<T> PostOrderRec(Node<T> curr)
+        {
+            List<T> list = new List<T>();
+            if (curr == null)
+            {
+                return list;
+            }
+            list.AddRange(PostOrderRec(curr.Left));
+            list.AddRange(PostOrderRec(curr.Right));
+            list.Add(curr.Value);
+            return list;
+        }
+
+        public List<T> InOrderRec(Node<T> curr)
+        {
+            List<T> list = new List<T>();
+            if (curr == null)
+            {
+                return list;
+            }
+            list.AddRange(InOrderRec(curr.Left));
+            list.Add(curr.Value);
+            list.AddRange(InOrderRec(curr.Right));
+            return list;
+        }
+
         public T[] PreOrder()
         {
             if (root == null)

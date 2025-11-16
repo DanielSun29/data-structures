@@ -127,5 +127,46 @@ namespace BSTTestProject
             }
 
         }
+
+        [Theory]
+        [InlineData(5, 2, 4, 6, 8, 10)]
+        public void InOrderRecursionTest(params int[] numbers)
+        {
+            BST<int> bst = new BST<int>();
+            for (int i = 0; i < numbers.Length; i++)
+            {
+                bst.Insert(numbers[i]);
+            }
+            var traversalResult = bst.InOrderRec(bst.root);
+            var expected = new List<int>(numbers);
+            expected.Sort();
+            Assert.Equal(expected, traversalResult);
+        }
+
+        [Theory]
+        [InlineData(new int[] { 5, 2, 4, 8, 6, 7, 10 }, 5, 2, 4, 8, 6, 7, 10)]
+        public void PreOrderRecursionTest(int[] correctOrder, params int[] numbers)
+        {
+            BST<int> bst = new BST<int>();
+            for (int i = 0; i < numbers.Length; i++)
+            {
+                bst.Insert(numbers[i]);
+            }
+            var traversalResult = bst.PreOrderRec(bst.root);
+            Assert.Equal(correctOrder, traversalResult);
+        }
+
+        [Theory]
+        [InlineData(new int[] { 4, 2, 6, 10, 8, 7, 5 }, 5, 2, 7, 4, 6, 8, 10)]
+        public void PostOrderRecursionTest(int[] correctOrder, params int[] numbers)
+        {
+            BST<int> bst = new BST<int>();
+            for (int i = 0; i < numbers.Length; i++)
+            {
+                bst.Insert(numbers[i]);
+            }
+            var traversalResult = bst.PostOrderRec(bst.root);
+            Assert.Equal(correctOrder, traversalResult);
+        }
     }
 }
