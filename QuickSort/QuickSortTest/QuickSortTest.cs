@@ -1,6 +1,6 @@
-namespace QuickSortTest
+namespace TheQuickSortTesting
 {
-    public class UnitTest1
+    public class QuickSortTest
     {
         [Fact]
         public void Test1()
