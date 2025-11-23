@@ -20,46 +20,60 @@
         public static List<T> Merge(List<T> left, List<T> right)
         {
             List<T> result = new List<T>();
+            int j = 0;
             for (int i = 0; i < right.Count; i++)
             {
-                int j = i;
-                while (left[j].CompareTo(right[i]) < 0)
+                while (j < left.Count && left[j].CompareTo(right[i]) < 0)
                 {
                     result.Add(left[j]);
                     j++;
                 }
                 result.Add(right[i]);
-            }// Solve array out of bound problem
-            // Also if left[0] is lesser than right[0] it skips left[0]
+            }
+            while (j < left.Count)
+            {
+                result.Add(left[j]);
+                j++;
+            }
             return result;
         }
 
         public static (List<T> Left, List<T> Right) Split(List<T> list)
         {
-            // Make left >= right for the sake of the Merge function
+            // Right is >= left
             var left = new List<T>();
             var right = new List<T>();
-            if (list.Count % 2 == 0)
+            for (int i = 0; i < list.Count; i++)
             {
-                for (int i = 0; i < list.Count / 2; i++)
+                if(i<list.Count/2)
                 {
                     left.Add(list[i]);
-                    right.Add(list[i + (list.Count / 2)]);
                 }
-            }
-            else
-            {
-                for (int i = 0; i < 1 + (list.Count / 2); i++)
+                else
                 {
-                    left.Add(list[i]);
-                    if (list[i + (list.Count / 2)] == null)
-                    {
-                        break;
-                    }
-                    right.Add(list[i + (list.Count / 2)]);
-
+                    right.Add(list[i]);
                 }
             }
+            //if (list.Count % 2 == 0)
+            //{
+            //    for (int i = 0; i < list.Count / 2; i++)
+            //    {
+            //        left.Add(list[i]);
+            //        right.Add(list[i + (list.Count / 2)]);
+            //    }
+            //}
+            //else
+            //{
+            //    for (int i = 0; i < 1 + (list.Count / 2); i++)
+            //    {
+            //        left.Add(list[i]);
+            //        if (list[i + (list.Count / 2)] == null)
+            //        {
+            //            break;
+            //        }
+            //        right.Add(list[i + (list.Count / 2)]);
+            //    }
+            //}
             return (left, right);
         }
     }
