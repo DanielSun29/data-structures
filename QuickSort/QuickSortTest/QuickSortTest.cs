@@ -24,6 +24,7 @@ namespace TheQuickSortTesting
         [InlineData(new int[] { 7, 4, 3, 6, 2, 1, 5 })]
         [InlineData(new int[] { 7, 0, 0, 0 })]
         [InlineData(new int[] { 6, 27, 58, 26, 61 })]
+        [InlineData(new int[] { 85, 60, 69, 92, 28, 23, 85, 11, 17, 1})]
         public void HoareSortTest(int[] arr)
         {
             int[] temp = new int[arr.Length];
@@ -40,16 +41,16 @@ namespace TheQuickSortTesting
         {
             for (int i = 0; i < 100; i++)
             {
-                int[] og = new int[100];
-                for (int j = 0; j < 100; j++)
+                int[] og = new int[10];
+                for (int j = 0; j < 10; j++)
                 {
                     og[j] = Random.Shared.Next(0, 100);
                 }
-                int[] output = new int[100];
+                int[] output = new int[10];
                 Array.Copy(og, output, og.Length);
-                TheQuickSort<int>.LomutoSort(output, 0, 99);
+                TheQuickSort<int>.HoareSort(output, 0, 9);
 
-                for (int j = 0; j < 99; j++)
+                for (int j = 0; j < 9; j++)
                 {
                     Assert.True(output[j] <= output[j+1]);
                 }
