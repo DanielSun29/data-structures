@@ -37,7 +37,9 @@
             keyLengthLabel = new ToolStripStatusLabel();
             messageLengthLabel = new ToolStripStatusLabel();
             encryptButton = new ToolStripSplitButton();
+            decryptButton = new ToolStripSplitButton();
             encryptedLabel = new Label();
+            decryptedLabel = new Label();
             statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -78,7 +80,7 @@
             // 
             // statusStrip1
             // 
-            statusStrip1.Items.AddRange(new ToolStripItem[] { keyLengthLabel, messageLengthLabel, encryptButton });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { keyLengthLabel, messageLengthLabel, encryptButton, decryptButton });
             statusStrip1.Location = new Point(0, 428);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(800, 22);
@@ -107,6 +109,16 @@
             encryptButton.Text = "Encrypt";
             encryptButton.ButtonClick += encryptButton_ButtonClick;
             // 
+            // decryptButton
+            // 
+            decryptButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            decryptButton.Image = (Image)resources.GetObject("decryptButton.Image");
+            decryptButton.ImageTransparentColor = Color.Magenta;
+            decryptButton.Name = "decryptButton";
+            decryptButton.Size = new Size(64, 20);
+            decryptButton.Text = "Decrypt";
+            decryptButton.ButtonClick += decryptButton_ButtonClick;
+            // 
             // encryptedLabel
             // 
             encryptedLabel.AutoSize = true;
@@ -116,11 +128,21 @@
             encryptedLabel.TabIndex = 5;
             encryptedLabel.Text = "[encrypted message]";
             // 
+            // decryptedLabel
+            // 
+            decryptedLabel.AutoSize = true;
+            decryptedLabel.Location = new Point(432, 266);
+            decryptedLabel.Name = "decryptedLabel";
+            decryptedLabel.Size = new Size(117, 15);
+            decryptedLabel.TabIndex = 6;
+            decryptedLabel.Text = "[decrypted message]";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(decryptedLabel);
             Controls.Add(encryptedLabel);
             Controls.Add(statusStrip1);
             Controls.Add(flowPanel);
@@ -147,5 +169,7 @@
         private ToolStripSplitButton encryptButton;
         private ToolStripStatusLabel messageLengthLabel;
         private Label encryptedLabel;
+        private ToolStripSplitButton decryptButton;
+        private Label decryptedLabel;
     }
 }

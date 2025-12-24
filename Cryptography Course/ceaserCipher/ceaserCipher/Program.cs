@@ -118,7 +118,7 @@ namespace caesarCipher
                     }
                     else
                     {
-                        int letterNumber = letter - 65;
+                        int letterNumber = letter - 65; 
                         letterNumber += shiftAmount;
                         result.Append((char)((letterNumber % 26) + 65));
                     }

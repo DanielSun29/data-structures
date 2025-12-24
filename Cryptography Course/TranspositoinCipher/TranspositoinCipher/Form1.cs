@@ -3,6 +3,7 @@ using System.Text;
 
 namespace TranspositoinCipher
 {
+
     public partial class Form1 : Form
     {
         public Form1()
@@ -31,17 +32,91 @@ namespace TranspositoinCipher
         private static string Encrypt(string message, string key)
         {
             StringBuilder output = new StringBuilder();
-            for (int j = 0; j < key.Length; j++)
+            KeyHolder[] tempKey = new KeyHolder[key.Length];
+            for (int i = 0; i < key.Length; i++)
             {
-                for (int i = j; i < message.Length; i += key.Length)
+                tempKey[i] = new KeyHolder(key[i], i);
+            }
+            Array.Sort(tempKey);
+            for (int i = 0; i < key.Length; i++)
+            {
+                for (int j = tempKey[i].index; j < message.Length; j += key.Length)
                 {
-                    if (i < message.Length)
-                    {
-                        output.Append(message[i]);
-                    }
+                    output.Append(message[j]);
                 }
             }
             return output.ToString();
+        }
+
+        private static string Decrypt(string cipherText, string key)
+        {
+            int kL = key.Length;
+            int tL = cipherText.Length;
+
+            // Build Key array and sort
+            KeyHolder[] tempKey = new KeyHolder[kL];
+            for (int i = 0; i < kL; i++)
+            {
+                tempKey[i] = new KeyHolder(key[i], i);
+            }
+
+            Array.Sort(tempKey);
+
+            int rows = (int)Math.Ceiling((float)tL / kL); // How many rows there are
+            int shortCols = kL * rows - tL; // number of columns missing last row
+
+            // Fill columns(from cipphertext)
+            string[] columns = new string[kL];
+            int curr = 0;
+
+            for (int i = 0; i < kL; i++)
+            {
+                int colLength;
+
+                if (i >= kL - shortCols)
+                {
+                    colLength = rows - 1;// Short column
+                }
+                else
+                {
+                    colLength = rows;
+                }
+                columns[tempKey[i].index] = cipherText.Substring(curr, colLength);
+                curr += colLength;
+            }
+
+            // Read message by row
+            StringBuilder output = new StringBuilder();
+
+            // Basically my old i & j method
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0; c < kL; c++)
+                {
+                    if (r < columns[c].Length)
+                    {
+                        output.Append(columns[c][r]);
+                    }
+                }
+            }
+
+            return output.ToString();
+
+            //// Old method
+            //int columnMaxLength = (int)Math.Ceiling((double)cipherText.Length / key.Length);
+
+            //StringBuilder output = new StringBuilder();
+            //for (int i = 0; i < columnMaxLength; i++)
+            //{
+            //    for (int j = 0; j < key.Length; j++)
+            //    {
+            //        int indexToAppend = j * columnMaxLength + i;
+            //        if (indexToAppend >= cipherText.Length) continue;
+            //        output.Append(cipherText[indexToAppend]);
+            //    }
+            //}
+
+            //return output.ToString();
         }
 
         private void generateButton_Click(object sender, EventArgs e)
@@ -62,6 +137,8 @@ namespace TranspositoinCipher
 
         private void encryptButton_ButtonClick(object sender, EventArgs e)
         {
+            key = keyText.Text.ToUpper();
+
             input = messageText.Text.Trim();
 
             encrypted = Encrypt(input, key);
@@ -82,7 +159,7 @@ namespace TranspositoinCipher
                 {
                     BorderStyle = BorderStyle.FixedSingle,
                     Tag = $"label {++labelCounters}",
-                    Width = (usableWidth - key.Length * (Margin.Left + Margin.Right))/ key.Length - 1,
+                    Width = (usableWidth - key.Length * (Margin.Left + Margin.Right)) / key.Length - 1,
                     TextAlign = ContentAlignment.MiddleCenter
                 };
                 if (i < key.Length)
@@ -97,6 +174,13 @@ namespace TranspositoinCipher
                 flowPanel.Controls.Add(label);
                 labels.Add(label);
             }
+        }
+
+        private void decryptButton_ButtonClick(object sender, EventArgs e)
+        {
+            decrypted = Decrypt(encrypted, key);
+
+            decryptedLabel.Text = decrypted;
         }
 
 
