@@ -35,11 +35,17 @@
             flowPanel = new FlowLayoutPanel();
             statusStrip1 = new StatusStrip();
             keyLengthLabel = new ToolStripStatusLabel();
+            keyLengthLabel2 = new ToolStripStatusLabel();
             messageLengthLabel = new ToolStripStatusLabel();
+            ciphertextLengthLabel = new ToolStripStatusLabel();
             encryptButton = new ToolStripSplitButton();
+            encryptButton2 = new ToolStripSplitButton();
             decryptButton = new ToolStripSplitButton();
             encryptedLabel = new Label();
             decryptedLabel = new Label();
+            keyText2 = new TextBox();
+            generateButton2 = new Button();
+            encryptedLabel2 = new Label();
             statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -53,7 +59,7 @@
             // 
             // generateButton
             // 
-            generateButton.Location = new Point(199, 17);
+            generateButton.Location = new Point(184, 17);
             generateButton.Name = "generateButton";
             generateButton.Size = new Size(86, 23);
             generateButton.TabIndex = 1;
@@ -80,7 +86,7 @@
             // 
             // statusStrip1
             // 
-            statusStrip1.Items.AddRange(new ToolStripItem[] { keyLengthLabel, messageLengthLabel, encryptButton, decryptButton });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { keyLengthLabel, keyLengthLabel2, messageLengthLabel, ciphertextLengthLabel, encryptButton, encryptButton2, decryptButton });
             statusStrip1.Location = new Point(0, 428);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(800, 22);
@@ -93,11 +99,23 @@
             keyLengthLabel.Size = new Size(70, 17);
             keyLengthLabel.Text = "[key length]";
             // 
+            // keyLengthLabel2
+            // 
+            keyLengthLabel2.Name = "keyLengthLabel2";
+            keyLengthLabel2.Size = new Size(79, 17);
+            keyLengthLabel2.Text = "[key 2 length]";
+            // 
             // messageLengthLabel
             // 
             messageLengthLabel.Name = "messageLengthLabel";
             messageLengthLabel.Size = new Size(98, 17);
             messageLengthLabel.Text = "[message length]";
+            // 
+            // ciphertextLengthLabel
+            // 
+            ciphertextLengthLabel.Name = "ciphertextLengthLabel";
+            ciphertextLengthLabel.Size = new Size(105, 17);
+            ciphertextLengthLabel.Text = "[ciphertext length]";
             // 
             // encryptButton
             // 
@@ -108,6 +126,16 @@
             encryptButton.Size = new Size(63, 20);
             encryptButton.Text = "Encrypt";
             encryptButton.ButtonClick += encryptButton_ButtonClick;
+            // 
+            // encryptButton2
+            // 
+            encryptButton2.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            encryptButton2.Image = (Image)resources.GetObject("encryptButton2.Image");
+            encryptButton2.ImageTransparentColor = Color.Magenta;
+            encryptButton2.Name = "encryptButton2";
+            encryptButton2.Size = new Size(104, 20);
+            encryptButton2.Text = "Double Encrypt";
+            encryptButton2.ButtonClick += encryptButton2_ButtonClick;
             // 
             // decryptButton
             // 
@@ -137,11 +165,41 @@
             decryptedLabel.TabIndex = 6;
             decryptedLabel.Text = "[decrypted message]";
             // 
+            // keyText2
+            // 
+            keyText2.Location = new Point(337, 17);
+            keyText2.Name = "keyText2";
+            keyText2.Size = new Size(166, 23);
+            keyText2.TabIndex = 7;
+            keyText2.Text = "Key 2";
+            // 
+            // generateButton2
+            // 
+            generateButton2.Location = new Point(509, 17);
+            generateButton2.Name = "generateButton2";
+            generateButton2.Size = new Size(86, 23);
+            generateButton2.TabIndex = 8;
+            generateButton2.Text = "Generate Key 2";
+            generateButton2.UseVisualStyleBackColor = true;
+            generateButton2.Click += generateButton2_Click;
+            // 
+            // encryptedLabel2
+            // 
+            encryptedLabel2.AutoSize = true;
+            encryptedLabel2.Location = new Point(432, 359);
+            encryptedLabel2.Name = "encryptedLabel2";
+            encryptedLabel2.Size = new Size(157, 15);
+            encryptedLabel2.TabIndex = 9;
+            encryptedLabel2.Text = "[doubly encrypted message]";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(encryptedLabel2);
+            Controls.Add(generateButton2);
+            Controls.Add(keyText2);
             Controls.Add(decryptedLabel);
             Controls.Add(encryptedLabel);
             Controls.Add(statusStrip1);
@@ -171,5 +229,11 @@
         private Label encryptedLabel;
         private ToolStripSplitButton decryptButton;
         private Label decryptedLabel;
+        private TextBox keyText2;
+        private Button generateButton2;
+        private ToolStripStatusLabel keyLengthLabel2;
+        private ToolStripSplitButton encryptButton2;
+        private Label encryptedLabel2;
+        private ToolStripStatusLabel ciphertextLengthLabel;
     }
 }

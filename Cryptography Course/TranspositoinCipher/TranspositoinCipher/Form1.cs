@@ -13,8 +13,10 @@ namespace TranspositoinCipher
 
         private string input = "";
         private string key = "";
+        private string key2 = "";
         private string decrypted;
         string encrypted;
+        string doubleEncrypted;
 
         int labelCounters = 0;
         List<Label> labels = new List<Label>();
@@ -50,6 +52,7 @@ namespace TranspositoinCipher
 
         private static string Decrypt(string cipherText, string key)
         {
+
             int kL = key.Length;
             int tL = cipherText.Length;
 
@@ -73,7 +76,7 @@ namespace TranspositoinCipher
             {
                 int colLength;
 
-                if (i >= kL - shortCols)
+                if (tempKey[i].index >= kL - shortCols)
                 {
                     colLength = rows - 1;// Short column
                 }
@@ -125,7 +128,7 @@ namespace TranspositoinCipher
             input = messageText.Text.Trim();
             if (input.Length > 30)
             {
-                key = generateKey(Random.Shared.Next(3, 10));
+                key = generateKey(Random.Shared.Next(3, (int)Math.Sqrt(input.Length)));
             }
             else
             {
@@ -135,9 +138,26 @@ namespace TranspositoinCipher
             keyLengthLabel.Text = $"{keyText.Text.Length}";
         }
 
+        private void generateButton2_Click(object sender, EventArgs e)
+        {
+            keyText2.Clear();
+            if (input.Length > 30)
+            {
+                key2 = generateKey(Random.Shared.Next(3, (int)Math.Sqrt(input.Length)));
+            }
+            else
+            {
+                key2 = generateKey(Random.Shared.Next(3, (int)input.Length / 3));
+            }
+            keyText2.Text = key2;
+            keyLengthLabel2.Text = $"{keyText.Text.Length}";
+        }
+
         private void encryptButton_ButtonClick(object sender, EventArgs e)
         {
             key = keyText.Text.ToUpper();
+
+            keyLengthLabel.Text = $"{keyText.Text.Length}";
 
             input = messageText.Text.Trim();
 
@@ -145,6 +165,8 @@ namespace TranspositoinCipher
 
 
             // Below is visualization
+
+            ciphertextLengthLabel.Text = $"{encrypted.Length}";
 
             flowPanel.Controls.Clear();
 
@@ -170,6 +192,46 @@ namespace TranspositoinCipher
                 else
                 {
                     label.Text = input[i - key.Length] + "";
+                }
+                flowPanel.Controls.Add(label);
+                labels.Add(label);
+            }
+        }
+
+        private void encryptButton2_ButtonClick(object sender, EventArgs e)
+        {
+            key2 = keyText2.Text.ToUpper();
+
+            keyLengthLabel2.Text = $"{keyText2.Text.Length}";
+
+            doubleEncrypted = Encrypt(encrypted, key2);
+
+            // Below is visualization
+
+            flowPanel.Controls.Clear();
+
+            encryptedLabel2.Text = doubleEncrypted;
+
+            ciphertextLengthLabel.Text = $"{encrypted.Length}";
+
+            for (int i = 0; i < key2.Length + encrypted.Length; i++)
+            {
+                int usableWidth = flowPanel.Width - flowPanel.Padding.Left - flowPanel.Padding.Right;
+                var label = new Label()
+                {
+                    BorderStyle = BorderStyle.FixedSingle,
+                    Tag = $"label {++labelCounters}",
+                    Width = (usableWidth - key2.Length * (Margin.Left + Margin.Right)) / key2.Length - 1,
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+                if (i < key.Length)
+                {
+                    label.Text = key2[i] + "";
+                    label.BackColor = Color.Red;
+                }
+                else
+                {
+                    label.Text = encrypted[i - key2.Length] + "";
                 }
                 flowPanel.Controls.Add(label);
                 labels.Add(label);
