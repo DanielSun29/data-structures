@@ -10,7 +10,7 @@ namespace Steganography
         Bitmap image2;
         Bitmap hiddenImage;
         Bitmap unhiddenImage;
-        int borderWidth;
+        //int borderWidth;
 
         public Form1()
         {
