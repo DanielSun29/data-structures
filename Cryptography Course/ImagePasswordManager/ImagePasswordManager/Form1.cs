@@ -16,6 +16,7 @@ namespace ImagePasswordManager
         Dictionary<string, PasswordEntry> entries = new Dictionary<string, PasswordEntry>();
         List<Point> pixelOrder;
         int nextFreeIndex = 0;
+        int nextFreeIndexBackwards;
 
 
         // ASCII values go from 0 to 127 inclusive, so we need 7 digits
@@ -48,48 +49,52 @@ namespace ImagePasswordManager
                 for (int y = 0; y < image.Height; y++)
                     pixelOrder.Add(new Point(x, y));
 
-            Random rng = new Random(masterKey.GetHashCode());
+            Random rng = new Random(StableHash(masterKey));
 
             Point[] pixelOrderInArray = pixelOrder.ToArray();
             rng.Shuffle(pixelOrderInArray);
             pixelOrder = new List<Point>(pixelOrderInArray);
         }
 
-
-        private Point[] GeneratePosition(int messageLength, Random rng, int width, int height, string key)
-        {
-            Point[] output = new Point[messageLength];
-            for (int i = 0; i < output.Length; i++)
-            {
-                int x = rng.Next(0, width);
-                int y = rng.Next(0, height);
-                if (output.Contains(new Point(x, y)))
-                {
-                    i--;
-                    continue;
-                }
-                output[i] = new Point(x, y);
-            }
-            return output;
-        }
+        //private Point[] GeneratePosition(int messageLength, Random rng, int width, int height, string key)
+        //{
+        //    Point[] output = new Point[messageLength];
+        //    for (int i = 0; i < output.Length; i++)
+        //    {
+        //        int x = rng.Next(0, width);
+        //        int y = rng.Next(0, height);
+        //        if (output.Contains(new Point(x, y)))
+        //        {
+        //            i--;
+        //            continue;
+        //        }
+        //        output[i] = new Point(x, y);
+        //    }
+        //    return output;
+        //}
 
         private void StorePassword(string label, string password)
         {
             if (entries.ContainsKey(label))
             {
-                throw new Exception("Label already exists");
+                passwordTextbox.Text = "Label already stored";
+                return;
             }
 
-            if (nextFreeIndex + password.Length > pixelOrder.Count)
+            if (nextFreeIndex + password.Length > pixelOrder.Count - ComputeHeaderSizeBytes())
             {
-                throw new Exception("Image is full");
+                passwordTextbox.Text = "Image is full";
+                return;
             }
 
-            entries[label] = new PasswordEntry
+            var entry = new PasswordEntry
             {
                 StartIndex = nextFreeIndex,
-                Length = password.Length
+                Length = password.Length,
+                Password = password
             };
+
+            entries[label] = entry;
 
             for (int i = 0; i < password.Length; i++)
             {
@@ -110,53 +115,54 @@ namespace ImagePasswordManager
             nextFreeIndex += password.Length;
         }
 
+        //private Bitmap Encrypt(string input, string key, Bitmap host)
+        //{
+        //    Random rng = new Random(StableHash(key));
 
-        private Bitmap Encrypt(string input, string key, Bitmap host)
-        {
-            rng = new Random(key.GetHashCode());
-            Point[] pixels = GeneratePosition(input.Length, rng, host.Width, host.Height, key);
-            Bitmap output;
-            if (encryptedPictureBox.Image == null)
-            {
-                output = new Bitmap(host);
-            }
-            else
-            {
-                output = new Bitmap(encryptedImage);
-            }
+        //    Point[] pixels = GeneratePosition(input.Length, rng, host.Width, host.Height, key);
+        //    Bitmap output;
+        //    if (encryptedPictureBox.Image == null)
+        //    {
+        //        output = new Bitmap(host);
+        //    }
+        //    else
+        //    {
+        //        output = new Bitmap(encryptedImage);
+        //    }
 
-            for (int i = 0; i < input.Length; i++)
-            {
-                Color pixel = output.GetPixel(pixels[i].X, pixels[i].Y);
+        //    for (int i = 0; i < input.Length; i++)
+        //    {
+        //        Color pixel = output.GetPixel(pixels[i].X, pixels[i].Y);
 
-                int intMessage = input[i];
+        //        int intMessage = input[i];
 
-                byte messageTop = (byte)(intMessage & 0b_1111_0000); //Remove bottom half
-                messageTop >>= 4; // Shift it to the last 4 digits
+        //        byte messageTop = (byte)(intMessage & 0b_1111_0000); //Remove bottom half
+        //        messageTop >>= 4; // Shift it to the last 4 digits
 
-                byte messageBottom = (byte)(intMessage & 0b_0000_1111);// Remove top half, no need to shift
+        //        byte messageBottom = (byte)(intMessage & 0b_0000_1111);// Remove top half, no need to shift
 
-                byte hiddenR = HideChannel(pixel.R, messageTop);
-                byte hiddenG = HideChannel(pixel.G, messageBottom);
-                // Nothing left for b
+        //        byte hiddenR = HideChannel(pixel.R, messageTop);
+        //        byte hiddenG = HideChannel(pixel.G, messageBottom);
+        //        // Nothing left for b
 
-                output.SetPixel(pixels[i].X, pixels[i].Y, Color.FromArgb(hiddenR, hiddenG, pixel.B));
-            }
+        //        output.SetPixel(pixels[i].X, pixels[i].Y, Color.FromArgb(hiddenR, hiddenG, pixel.B));
+        //    }
 
-            return output;
-        }
+        //    return output;
+        //}
 
-        private static byte HideChannel(byte host, byte hide)
-        {
-            // In this case we have the hide values all in the smallest 4 digits
-            byte output = (byte)(host & 0b_1111_0000);
-            output |= hide;
-            return output;
-        }
+        //private static byte HideChannel(byte host, byte hide)
+        //{
+        //    // In this case we have the hide values all in the smallest 4 digits
+        //    byte output = (byte)(host & 0b_1111_0000);
+        //    output |= hide;
+        //    return output;
+        //}
 
         public static string GenerateRandomKey(int length)
+
         {
-            StringBuilder key = new StringBuilder();
+            StringBuilder key = new();
             for (int i = 0; i < length; i++)
             {
                 key.Append((char)Random.Shared.Next(65, 91));
@@ -164,29 +170,32 @@ namespace ImagePasswordManager
             return key.ToString();
         }
 
-        private void CheckDifference(Bitmap host, Bitmap hide)
-        {
-            for (int x = 0; x < host.Width; x++)
-            {
-                for (int y = 0; y < host.Height; y++)
-                {
-                    Color hoP = host.GetPixel(x, y);
-                    Color hiP = hide.GetPixel(x, y);
-                    if (hoP != hiP)
-                    {
-                        continue;
-                    }
-                }
-            }
-            return;
-        }
+        //private static void CheckDifference(Bitmap host, Bitmap hide)
+        //{
+        //    for (int x = 0; x < host.Width; x++)
+        //    {
+        //        for (int y = 0; y < host.Height; y++)
+        //        {
+        //            Color hoP = host.GetPixel(x, y);
+        //            Color hiP = hide.GetPixel(x, y);
+        //            if (hoP != hiP)
+        //            {
+        //                continue;
+        //            }
+        //        }
+        //    }
+        //    return;
+        //}
 
-        string GetPassword(string label)
+        private string GetPassword(string label)
         {
             if (!entries.TryGetValue(label, out var entry))
-                throw new Exception("Label not found");
+            {
+                passwordTextbox2.Text = "Label not found!";
+                return null;
+            }
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder output = new();
 
             for (int i = 0; i < entry.Length; i++)
             {
@@ -196,33 +205,211 @@ namespace ImagePasswordManager
                 byte high = (byte)((pixel.R & 0b_0000_1111) << 4);
                 byte low = (byte)(pixel.G & 0b_0000_1111);
 
-                sb.Append((char)(high | low));
+                output.Append((char)(high | low));
             }
 
-            return sb.ToString();
-        }
-
-        private string Decrypt(Bitmap hide, string key)
-        {
-            rng = new Random(key.GetHashCode());
-            Point[] pixels = GeneratePosition(input.Length, rng, hide.Width, hide.Height, key);
-            StringBuilder output = new StringBuilder();
-
-            for (int i = 0; i < pixels.Length; i++)
-            {
-                Color pixel = hide.GetPixel(pixels[i].X, pixels[i].Y);
-
-                byte messageTop = (byte)(pixel.R & 0b_0000_1111);
-                messageTop <<= 4;
-
-                byte messageBottom = (byte)(pixel.G & 0b_0000_1111);
-
-                int message = (messageTop | messageBottom);
-
-                output.Append((char)message);
-            }
             return output.ToString();
         }
+
+        //private string Decrypt(Bitmap hide, string key)
+        //{
+        //    Random rng = new Random(StableHash(key));
+
+        //    Point[] pixels = GeneratePosition(input.Length, rng, hide.Width, hide.Height, key);
+        //    StringBuilder output = new();
+
+        //    for (int i = 0; i < pixels.Length; i++)
+        //    {
+        //        Color pixel = hide.GetPixel(pixels[i].X, pixels[i].Y);
+
+        //        byte messageTop = (byte)(pixel.R & 0b_0000_1111);
+        //        messageTop <<= 4;
+
+        //        byte messageBottom = (byte)(pixel.G & 0b_0000_1111);
+
+        //        int message = (messageTop | messageBottom);
+
+        //        output.Append((char)message);
+        //    }
+        //    return output.ToString();
+        //}
+
+        // The next functions are built for making code work after restart
+        private void WriteByte(byte value)
+        {
+            Point p = pixelOrder[nextFreeIndex++];
+            Color pixel = encryptedImage.GetPixel(p.X, p.Y);
+
+            byte high = (byte)(value >> 4);
+            byte low = (byte)(value & 0b_0000_1111);
+
+            byte r = (byte)((pixel.R & 0b_1111_0000) | high);
+            byte g = (byte)((pixel.G & 0b_1111_0000) | low);
+
+            encryptedImage.SetPixel(p.X, p.Y, Color.FromArgb(r, g, pixel.B));
+        }
+        private void WriteByteBackwards(byte value)
+        {
+            Point p = pixelOrder[nextFreeIndexBackwards--];
+            Color pixel = encryptedImage.GetPixel(p.X, p.Y);
+
+            byte high = (byte)(value >> 4);
+            byte low = (byte)(value & 0b_0000_1111);
+
+            byte r = (byte)((pixel.R & 0b_1111_0000) | high);
+            byte g = (byte)((pixel.G & 0b_1111_0000) | low);
+
+            encryptedImage.SetPixel(p.X, p.Y, Color.FromArgb(r, g, pixel.B));
+        }
+
+        private byte ReadByte()
+        {
+            Point p = pixelOrder[nextFreeIndex++];
+            Color pixel = encryptedImage.GetPixel(p.X, p.Y);
+
+            byte high = (byte)((pixel.R & 0b_0000_1111) << 4);
+            byte low = (byte)(pixel.G & 0b_0000_1111);
+
+            return (byte)(high | low);
+        }
+        private byte ReadByteBackwards()
+        {
+            Point p = pixelOrder[nextFreeIndexBackwards--];
+            Color pixel = encryptedImage.GetPixel(p.X, p.Y);
+
+            byte high = (byte)((pixel.R & 0b_0000_1111) << 4);
+            byte low = (byte)(pixel.G & 0b_0000_1111);
+
+            return (byte)(high | low);
+        }
+
+        private void WriteHeader()
+        {
+            nextFreeIndex = 0;
+
+            WriteByte((byte)entries.Count);
+
+            foreach (var pair in entries)
+            {
+                string label = pair.Key;
+                PasswordEntry entry = pair.Value;
+
+                WriteByte((byte)label.Length);
+
+                foreach (char c in label)
+                {
+                    WriteByte((byte)c);
+                }
+
+                // password length (2 bytes)
+                WriteByte((byte)(entry.Length >> 8));
+                WriteByte((byte)(entry.Length & 0b_1111_1111));
+            }
+        }
+
+        private void WriteHeaderBackwards()
+        {
+            int headerSize = ComputeHeaderSizeBytes();
+            nextFreeIndexBackwards = pixelOrder.Count - 1; // start at last pixel
+
+            WriteByteBackwards((byte)entries.Count);
+
+            foreach (var pair in entries)
+            {
+                string label = pair.Key;
+                PasswordEntry entry = pair.Value;
+
+                WriteByteBackwards((byte)label.Length);
+
+                foreach (char c in label)
+                    WriteByteBackwards((byte)c);
+
+                WriteByteBackwards((byte)(entry.Length >> 8));
+                WriteByteBackwards((byte)(entry.Length & 0xFF));
+            }
+        }
+
+        private void ReadHeaderBackwards()
+        {
+            entries.Clear();
+
+            nextFreeIndexBackwards = pixelOrder.Count - 1;
+
+            int count = ReadByteBackwards();
+
+            int passwordStart = 0;
+
+            for (int i = 0; i < count; i++)
+            {
+                int labelLen = ReadByteBackwards();
+                StringBuilder label = new();
+
+                for (int j = 0; j < labelLen; j++)
+                    label.Append((char)ReadByteBackwards());
+
+                int lenHigh = ReadByteBackwards();
+                int lenLow = ReadByteBackwards();
+                int passwordLen = (lenHigh << 8) | lenLow;
+
+                entries[label.ToString()] = new PasswordEntry
+                {
+                    StartIndex = passwordStart,
+                    Length = passwordLen
+                };
+
+                passwordStart += passwordLen;
+            }
+        }
+
+        private void ReadHeader()
+        {
+            entries.Clear();
+            nextFreeIndex = 0;
+
+            int count = ReadByte();
+
+            for (int i = 0; i < count; i++)
+            {
+                int labelLen = ReadByte();
+                StringBuilder label = new();
+
+                for (int j = 0; j < labelLen; j++)
+                {
+                    label.Append((char)ReadByte());
+                }
+
+                int lenHigh = ReadByte();
+                int lenLow = ReadByte();
+                int passwordLen = (lenHigh << 8) | lenLow;
+
+                entries[label.ToString()] = new PasswordEntry
+                {
+                    StartIndex = nextFreeIndex,
+                    Length = passwordLen
+                };
+
+                nextFreeIndex += passwordLen;
+            }
+        }
+
+        private int ComputeHeaderSizeBytes()
+        {
+            int size = 1; // entry count
+
+            foreach (var kv in entries)
+            {
+                string label = kv.Key;
+                size += 1;              // label length
+                size += label.Length;   // label chars
+                size += 2;              // password length (2 bytes)
+            }
+
+            return size;
+        }
+
+
+        // Stop here
+
 
         private void storeButton_Click(object sender, EventArgs e)
         {
@@ -231,8 +418,7 @@ namespace ImagePasswordManager
             key = keyTextbox.Text.Trim();
 
             string label = labelTextbox.Text.Trim();
-            labels.Add(label);
-            Random rng = new Random(label.GetHashCode());
+            Random rng = new Random(StableHash(label));
             randoms.Add(rng);
 
             char[] tempKey = key.ToCharArray();
@@ -254,16 +440,16 @@ namespace ImagePasswordManager
         private void getButton_Click(object sender, EventArgs e)
         {
             string label = labelTextbox2.Text.Trim();
-            if (!labels.Contains(label))
+            if (!entries.ContainsKey(label))
             {
                 passwordTextbox2.Text = "Label not found";
                 return;
             }
 
             char[] tempKey = key.ToCharArray();
-            Random rng = new Random(label.GetHashCode());
+            Random rng = new(StableHash(label));
             rng.Shuffle(tempKey);
-            string shuffledKey = new string(tempKey);
+            string shuffledKey = new(tempKey);
             //decrypted = Decrypt(encryptedImage, shuffledKey);
             decrypted = GetPassword(label);
             passwordTextbox2.Text = decrypted;
@@ -288,10 +474,97 @@ namespace ImagePasswordManager
             storeButton.Visible = true;
             getButton.Visible = true;
             originalPictureBox.Visible = true;
+            uploadButton.Visible = true;
+            downloadButton.Visible = true;
 
             // Make btn invisible and disabled
             initButton.Visible = false;
             initButton.Enabled = false;
+        }
+
+        public static int StableHash(string input)
+        {
+            unchecked
+            {
+                int hash = (int)2166136261;
+
+                foreach (char c in input)
+                {
+                    hash ^= c;
+                    hash *= 16777619;
+                }
+
+                return hash;
+            }
+        }
+
+
+        private void saveFileDialog_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            encryptedImage.Save(saveFileDialog.FileName);
+        }
+
+        private void downloadButton_Click(object sender, EventArgs e)
+        {
+            // Start from a clean copy of the original image
+            encryptedImage = new Bitmap(originalImage);
+
+            // Rebuild pixel order
+            InitializePixelOrder(encryptedImage, key);
+
+            nextFreeIndex = 0;
+
+            // Now write all passwords sequentially
+            foreach (var kv in entries)
+            {
+                var entry = kv.Value;
+
+                entry.StartIndex = nextFreeIndex; // recompute
+
+                for (int i = 0; i < entry.Password.Length; i++)
+                {
+                    Point p = pixelOrder[nextFreeIndex + i];
+                    Color pixel = encryptedImage.GetPixel(p.X, p.Y);
+
+                    byte value = (byte)entry.Password[i];
+
+                    byte high = (byte)((value & 0b_1111_0000) >> 4);
+                    byte low = (byte)(value & 0b_0000_1111);
+
+                    byte r = (byte)((pixel.R & 0b_1111_0000) | high);
+                    byte g = (byte)((pixel.G & 0b_1111_0000) | low);
+
+                    encryptedImage.SetPixel(p.X, p.Y, Color.FromArgb(r, g, pixel.B));
+                }
+
+                nextFreeIndex += entry.Password.Length;
+            }
+
+            // Write header
+            WriteHeaderBackwards();
+
+            encryptedPictureBox.Image = encryptedImage;
+            saveFileDialog.ShowDialog();
+        }
+
+
+        private void uploadButton_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() != DialogResult.OK)
+                return;
+
+            encryptedImage = new Bitmap(openFileDialog1.FileName);
+            encryptedPictureBox.Image = encryptedImage;
+
+            InitializePixelOrder(encryptedImage, key);
+
+            nextFreeIndex = 0;
+            ReadHeaderBackwards();
+        }
+
+
+        private void openFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+        {
         }
     }
 }

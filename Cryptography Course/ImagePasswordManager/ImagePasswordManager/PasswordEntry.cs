@@ -10,5 +10,6 @@ namespace ImagePasswordManager
     {
         public int StartIndex;
         public int Length;
+        public string Password { get; set; }
     }
 }

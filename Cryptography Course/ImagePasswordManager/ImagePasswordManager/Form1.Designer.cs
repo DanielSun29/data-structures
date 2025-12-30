@@ -43,22 +43,26 @@
             label3 = new Label();
             label4 = new Label();
             initButton = new Button();
+            saveFileDialog = new SaveFileDialog();
+            downloadButton = new Button();
+            uploadButton = new Button();
+            openFileDialog1 = new OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)originalPictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)encryptedPictureBox).BeginInit();
             SuspendLayout();
             // 
             // originalPictureBox
             // 
-            originalPictureBox.Location = new Point(557, 25);
+            originalPictureBox.Location = new Point(648, 25);
             originalPictureBox.Name = "originalPictureBox";
-            originalPictureBox.Size = new Size(224, 269);
+            originalPictureBox.Size = new Size(133, 154);
             originalPictureBox.TabIndex = 0;
             originalPictureBox.TabStop = false;
             originalPictureBox.Visible = false;
             // 
             // encryptedPictureBox
             // 
-            encryptedPictureBox.Location = new Point(557, 314);
+            encryptedPictureBox.Location = new Point(557, 274);
             encryptedPictureBox.Name = "encryptedPictureBox";
             encryptedPictureBox.Size = new Size(224, 269);
             encryptedPictureBox.TabIndex = 1;
@@ -190,11 +194,44 @@
             initButton.UseVisualStyleBackColor = true;
             initButton.Click += initButton_Click;
             // 
+            // saveFileDialog
+            // 
+            saveFileDialog.FileOk += saveFileDialog_FileOk;
+            // 
+            // downloadButton
+            // 
+            downloadButton.Location = new Point(557, 548);
+            downloadButton.Name = "downloadButton";
+            downloadButton.Size = new Size(224, 35);
+            downloadButton.TabIndex = 15;
+            downloadButton.Text = "Save";
+            downloadButton.UseVisualStyleBackColor = true;
+            downloadButton.Visible = false;
+            downloadButton.Click += downloadButton_Click;
+            // 
+            // uploadButton
+            // 
+            uploadButton.Location = new Point(557, 233);
+            uploadButton.Name = "uploadButton";
+            uploadButton.Size = new Size(224, 35);
+            uploadButton.TabIndex = 16;
+            uploadButton.Text = "Upload Imgae";
+            uploadButton.UseVisualStyleBackColor = true;
+            uploadButton.Visible = false;
+            uploadButton.Click += uploadButton_Click;
+            // 
+            // openFileDialog1
+            // 
+            openFileDialog1.FileName = "openFileDialog1";
+            openFileDialog1.FileOk += openFileDialog1_FileOk;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(817, 608);
+            Controls.Add(uploadButton);
+            Controls.Add(downloadButton);
             Controls.Add(initButton);
             Controls.Add(label4);
             Controls.Add(label3);
@@ -236,5 +273,9 @@
         private Label label3;
         private Label label4;
         private Button initButton;
+        private SaveFileDialog saveFileDialog;
+        private Button downloadButton;
+        private Button uploadButton;
+        private OpenFileDialog openFileDialog1;
     }
 }

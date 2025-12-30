@@ -52,7 +52,7 @@ namespace Steganography
             return result;
         }
 
-        static byte HideChannel(byte host, byte hide)
+        private byte HideChannel(byte host, byte hide)
         {
             byte hideMSB = (byte)(hide >> 4);
 
