@@ -38,7 +38,7 @@
 
         public static void HoareSort(T[] arr, int start, int end)
         {
-            if (end - start <= 1)
+            if (end - start < 1)
             {
                 return;
             }
@@ -95,37 +95,36 @@
                 if (left < right)
                 {
                     Swap(arr, left, right);
-                    left++;
                 }
             }
-            //T pivot = arr[start];
-            //int left = start - 1;
-            //int right = end + 1;
+            /*T pivot = arr[start];
+            int left = start - 1;
+            int right = end + 1;
 
-            ////keep looping till the indicators over lap with one another
-            //while (true)
-            //{
-            //    //keep increasing the left indicator till the value is bigger or equal to the pivot
-            //    do
-            //    {
-            //        left++;
-            //    } while (arr[left].CompareTo(pivot) < 0);
+            //keep looping till the indicators over lap with one another
+            while (true)
+            {
+                //keep increasing the left indicator till the value is bigger or equal to the pivot
+                do
+                {
+                    left++;
+                } while (arr[left].CompareTo(pivot) < 0);
 
-            //    //keep decreasing the right indicator till the value is smaller or equal to the pivot
-            //    do
-            //    {
-            //        right--;
-            //    } while (arr[right].CompareTo(pivot) > 0);
+                //keep decreasing the right indicator till the value is smaller or equal to the pivot
+                do
+                {
+                    right--;
+                } while (arr[right].CompareTo(pivot) > 0);
 
-            //    //overlap check
-            //    if (left >= right)
-            //    {
-            //        break;
-            //    }
+                //overlap check
+                if (left >= right)
+                {
+                    break;
+                }
 
-            //    //swap the indicators when you finish moving them
-            //    Swap(arr, left, right);
-            //}
+                //swap the indicators when you finish moving them
+                Swap(arr, left, right);
+            }*/
 
             //#################################################
             // This part is likely wrong since 2 of the test cases were wrong w/ the github code and this was the part we had.
