@@ -1,3 +1,5 @@
+using HeapTree;
+
 namespace HeapTreeTest
 {
     public class UnitTest1
@@ -27,6 +29,41 @@ namespace HeapTreeTest
             {
                 tree.Pop();
                 Assert.True(ValidateHeap(tree, 0));
+            }
+        }
+
+        [Theory]
+        [InlineData(new int[] { 7, 4, 3, 6, 2, 1, 5 })]
+        [InlineData(new int[] { 7, 0, 0, 0 })]
+        [InlineData(new int[] { 6, 27, 58, 26, 61 })]
+        [InlineData(new int[] { 85, 60, 69, 92, 28, 23, 85, 11, 17, 1 })]
+        public void HeapSortTest(int[] arr)
+        {
+            int[] temp = new int[arr.Length];
+            Array.Copy(arr, temp, arr.Length);
+
+            int[] sorted = Tree<int>.Sort(temp);
+
+            Array.Sort(temp);
+            Assert.True(temp.SequenceEqual(sorted));
+        }
+
+        [Fact]
+        public void StressTest()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                int[] og = new int[10];
+                for (int j = 0; j < 10; j++)
+                {
+                    og[j] = Random.Shared.Next(0, 100);
+                }
+                int[] output = Tree<int>.Sort(og);
+
+                for (int j = 0; j < 9; j++)
+                {
+                    Assert.True(output[j] <= output[j + 1]);
+                }
             }
         }
 

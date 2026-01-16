@@ -82,5 +82,25 @@ namespace HeapTree
             Array.Copy(heap, temp, heap.Length);
             heap = temp;
         }
+
+        public static T[] Sort(T[] input)
+        {
+            Tree<T> heap = new Tree<T>(input.Length);
+            
+            for (int i = 0; i < input.Length; i++)
+            {
+                heap.Insert(input[i]);
+            }
+
+            T[] output = new T[input.Length];
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                output[i] = heap.heap[0];
+                heap.Pop();
+            }
+
+            return output;
+        }
     }
 }
