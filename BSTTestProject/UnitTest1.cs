@@ -18,6 +18,18 @@ namespace BSTTestProject
 
         [Theory]
         [InlineData(5, 2, 4, 6, 8, 10)]
+        public void RecursiveInsertTest(params int[] numbers)
+        {
+            BST<int> bst = new BST<int>();
+            for (int i = 0; i < numbers.Length; i++)
+            {
+                bst.RecursiveInsert(numbers[i]);
+                Assert.True(bst.Contains(numbers[i]));
+            }
+        }
+
+        [Theory]
+        [InlineData(5, 2, 4, 6, 8, 10)]
         public void ContainsTest(params int[] numbers)
         {
             BST<int> bst = new BST<int>();
