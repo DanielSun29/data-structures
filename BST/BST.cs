@@ -29,46 +29,33 @@ namespace BST
             {
                 throw new NullReferenceException("value is null");
             }
-            if (count == 0)
-            {
-                root = new Node<T>(value);
-                count++;
-                return;
-            }
-            RecursiveInsertHelper(root, value);
+            root = RecursiveInsertHelper(root, value);
             count++;
         }
 
-        private void RecursiveInsertHelper(Node<T> curr, T value)
+        private Node<T> RecursiveInsertHelper(Node<T> curr, T value)
         {
-            if (value.CompareTo(curr.Value) == 0 && curr != root)
+            if (curr == null)
             {
-                throw new DuplicateKeyException("Inserted Duplicate");
+                return new Node<T>(value);
             }
             if (value.CompareTo(curr.Value) < 0)
             {
-                if (curr.Left == null)
-                {
-                    curr.Left = new Node<T>(value);
-                    return;
-                }
-                else
-                {
-                    RecursiveInsertHelper(curr.Left, value);
-                }
+                var temp = RecursiveInsertHelper(curr.Left, value);
+                curr.Left = temp;
             }
             else if (value.CompareTo(curr.Value) > 0)
             {
-                if (curr.Right == null)
-                {
-                    curr.Right = new Node<T>(value);
-                    return;
-                }
-                else
-                {
-                    RecursiveInsertHelper(curr.Right, value);
-                }
+                var temp = RecursiveInsertHelper(curr.Right, value);
+                curr.Right = temp;
             }
+            if (value.CompareTo(curr.Value) == 0)
+            {
+                throw new DuplicateKeyException("Inserted Duplicate");
+            }
+
+
+            return curr;
         }
 
         public void Insert(T value)
