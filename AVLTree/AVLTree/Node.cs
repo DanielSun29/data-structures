@@ -18,10 +18,11 @@ namespace AVLTree
         {
             get
             {
+                UpdateHeight();
                 if (Left == null && Right == null) return 0;
-                return (Right?.Height ?? 0) - (Left?.Height ?? 0);
+                return (Right != null ? Right.Height : 0) - (Left != null ? Left.Height : 0);
                 /*
-                 return (Right != null ? Right.Height : 0) - (Left != null ? Left.Height : 0);
+                 return (Right?.Height ?? 0) - (Left?.Height ?? 0);
                  these 2 are equal, look at notes in base converter
                  */
             }
@@ -61,6 +62,33 @@ namespace AVLTree
                 }
             }
         }//--Optional, for your convenience-- implement this!
+
+
+        // Rotations: return the new root after rotation
+
+        internal Node<T> RightRotate()
+        {
+            Node<T> newRoot = Left;
+            Node<T> temp = newRoot.Right;
+            newRoot.Right = this;
+            Left = temp;
+            UpdateHeight();
+            newRoot.UpdateHeight();
+            return newRoot;
+        }
+
+        internal Node<T> LeftRotate()
+        {
+            Node<T> newRoot = Right;
+            Node<T> temp = newRoot.Left;
+            newRoot.Left = this;
+            Right = temp;
+            UpdateHeight();
+            newRoot.UpdateHeight();
+            return newRoot;
+        }
+
+
     }
 
 }
