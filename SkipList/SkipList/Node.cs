@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SkipList
+{
+    public class Node<T> where T : IComparable<T>
+    {
+        public T Value; // Value of the node
+        public Node<T>? Next; // Rightward connection
+        public Node<T>? Down; // Downward connection
+        public int Height { get; } // Vertical height of the node
+
+        public Node(T value)
+        {
+            Value = value;
+            Next = null;
+            Down = null;
+            Height = 1;
+        }// Fill out constructors
+
+        public Node(T value, Node<T> down)
+        {
+            Value = value;
+            Next = null;
+            Down = down;
+            Height = down.Height + 1;
+        }
+    }
+
+}
