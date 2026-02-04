@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="SDLLTest/SDLLTest.csproj" Id="eeb01f35-1d01-4e8d-884b-76fa8d1b3ba4" />
   <Project Path="SortedDoublyLinkedList/SortedDoublyLinkedList.csproj" />
 </Solution>

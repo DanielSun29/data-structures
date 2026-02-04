@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SortedDoublyLinkedList
 {
-    internal class List<T> where T : IComparable<T>
+    public class List<T> where T : IComparable<T>
     {
         public Node<T> Head { get; set; }
 
@@ -39,6 +39,53 @@ namespace SortedDoublyLinkedList
             }
             ConnectNodes(curr, temp, curr.Next);
             Count++;
+        }
+
+        public bool Contains(T value)
+        {
+            Node<T> curr = Head;
+            while (curr.Next != null && curr.Next.Value.CompareTo(value) < 0)
+            {
+                curr = curr.Next;
+            }
+            return curr.Next != null && curr.Next.Value.CompareTo(value) == 0;
+        }
+
+        public void Remove(T value)
+        {
+            Node<T> curr = Head;
+            while (curr.Next != null && curr.Next.Value.CompareTo(value) < 0)
+            {
+                curr = curr.Next;
+            }
+            if (curr.Next != null && curr.Next.Value.CompareTo(value) == 0)
+            {
+                RemoveLinks(curr.Next);
+                Count--;
+            }
+        }
+
+        private static void RemoveLinks(Node<T> node)
+        {
+            if (node.Previous != null)
+            {
+                node.Previous.Next = node.Next;
+            }
+            if (node.Next != null)
+            {
+                node.Next.Previous = node.Previous;
+            }
+        }
+
+        public bool IsSorted()
+        {
+            Node<T> curr = Head;
+            while (curr.Next != null)
+            {
+                if (curr.Value.CompareTo(curr.Next.Value) > 0) return false;
+                curr = curr.Next;
+            }
+            return true;
         }
     }
 }

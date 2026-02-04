@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SortedDoublyLinkedList
 {
-    internal class Node<T> where T : IComparable<T>
+    public class Node<T> where T : IComparable<T>
     {
         public Node<T> Next { get; set; }
         public Node<T> Previous { get; set; } // the only change
