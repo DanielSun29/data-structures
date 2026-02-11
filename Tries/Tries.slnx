@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Tries/Tries.csproj" />
+  <Project Path="TriesTest/TriesTest.csproj" />
+</Solution>
