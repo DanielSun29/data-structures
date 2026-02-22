@@ -31,6 +31,11 @@ namespace UnweightedUndirectedGraphs
             if (vertex == null) return false;
             if (!Vertices.Contains(vertex)) return false;
             Vertices.Remove(vertex);
+            foreach (Vertex<T> v in Vertices)
+            {
+                v.Neighbors.Remove(vertex);
+                RemoveEdge(vertex, v);
+            }
             return true;
         }
         // - Returns true if the removal succeeded, false otherwise
@@ -88,7 +93,7 @@ namespace UnweightedUndirectedGraphs
             {
                 if (!visited.Contains(v))
                 {
-                    list.AddRange(DepthFirstTraversal(v));
+                    list.AddRange(DepthFirstTraversal(v, visited));
                 }
             }
             list.Add(curr.Value);
@@ -113,6 +118,7 @@ namespace UnweightedUndirectedGraphs
                     if (!visited.Contains(v))
                     {
                         movement.Enqueue(v);
+                        visited.Add(v);
                     }
                 }
             }

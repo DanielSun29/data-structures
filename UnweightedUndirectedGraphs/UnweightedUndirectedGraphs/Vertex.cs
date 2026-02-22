@@ -12,6 +12,7 @@ namespace UnweightedUndirectedGraphs
         public Vertex(T value)
         {
             this.Value = value; 
+            this.Neighbors = new List<Vertex<T>>();
         }
     }
 }
