@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="WeightedDirectedGraphs/WeightedDirectedGraphs.csproj" />
+  <Project Path="WeightedDirectedGraphsTest/WeightedDirectedGraphsTest.csproj" Id="ec3e981b-33f1-42df-8767-a6b649f1ec9a" />
 </Solution>
