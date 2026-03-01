@@ -6,13 +6,13 @@ namespace Pathfinding
 {
     public class VertexInfo<T>
     {
-        Vertex<T> Vertex { get; set; } // This is the original vertex
+        public Vertex<T> Vertex { get; set; } // This is the original vertex
 
-        float TotalCost { get; set; }
-        bool IsVisited { get; set; }
-        Edge<T> FoundingEdge { get; set; }
-            
-        T Value
+        public float TotalCost { get; set; }
+        public bool IsVisited { get; set; }
+        public Edge<T> FoundingEdge { get; set; }
+
+        public T Value
         {
             get
             {
@@ -23,5 +23,17 @@ namespace Pathfinding
                 Vertex.Value = value;
             }
         }
+
+        public List<Edge<T>> Edges
+        {
+            get
+            {
+                return Vertex.Edges;
+            }
+            set
+            {
+                Vertex.Edges = value;
+            }
+        }   
     }
 }

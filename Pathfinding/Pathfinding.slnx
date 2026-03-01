@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="Pathfinding/Pathfinding.csproj" />
+  <Project Path="PathFindingTest/PathFindingTest.csproj" Id="df6c8f1d-c997-4a7e-ad5a-5ba2ca26a517" />
 </Solution>
