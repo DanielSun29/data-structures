@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="Pathfinding/Pathfinding.csproj" />
   <Project Path="PathFindingTest/PathFindingTest.csproj" Id="df6c8f1d-c997-4a7e-ad5a-5ba2ca26a517" />
+  <Project Path="PathfindingVisualizer/PathfindingVisualizer.csproj" Id="2a07a52c-bcb9-4b30-8266-16871fdbf3e8" />
 </Solution>
