@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace Pathfinding
@@ -128,28 +129,42 @@ namespace Pathfinding
             return Search(value) != null;
         }
 
+
         public List<Vertex<T>> Dijkstra(Vertex<T> start, Vertex<T> end)
         {
             if (start == null || end == null) return null;
             if (!Vertices.Keys.Contains(start) || !Vertices.Keys.Contains(end)) return null;
 
             Queue = new PriorityQueue<Vertex<T>, float>();
+
+            List<Vertex<T>> visited = new List<Vertex<T>>();
+
             foreach (Vertex<T> vertex in vertices.Keys)
             {
                 vertices[vertex].TotalCost = float.PositiveInfinity;
-                Queue.Enqueue(vertex, float.PositiveInfinity);
             }
             vertices[start].TotalCost = 0;
+
+            visited.Add(start);
             Queue.Enqueue(start, 0);
             while (Queue.Count > 0)
             {
                 Vertex<T> curr = Queue.Dequeue();
+                foreach (Edge<T> edge in curr.Edges)
+                {
+                    if (!visited.Contains(edge.EndVertex))
+                    {
+                        Queue.Enqueue(edge.EndVertex, vertices[edge.EndVertex].TotalCost);
+                    }
+                }
+
                 if (curr == end)
                 {
                     Stack<Vertex<T>> path = new Stack<Vertex<T>>();
                     while (curr != null)
                     {
                         path.Push(curr);
+                        if (curr == start) break;
                         curr = vertices[curr].FoundingEdge.StartVertex;
                     }
                     return path.ToList();
@@ -162,6 +177,59 @@ namespace Pathfinding
                         vertices[edge.EndVertex].TotalCost = altCost;
                         vertices[edge.EndVertex].FoundingEdge = edge;
                         Queue.Enqueue(edge.EndVertex, altCost);
+                    }
+                }
+            }
+            return null; // No path found
+        }
+
+        public List<Vertex<T>> AStar(Vertex<T> start, Vertex<T> end, Func<Vertex<T>, Vertex<T>, float> heuristic)
+        {
+            if (start == null || end == null) return null;
+            if (!Vertices.Keys.Contains(start) || !Vertices.Keys.Contains(end)) return null;
+
+            Queue = new PriorityQueue<Vertex<T>, float>();
+
+            List<Vertex<T>> visited = new List<Vertex<T>>();
+
+            foreach (Vertex<T> vertex in vertices.Keys)
+            {
+                vertices[vertex].TotalCost = float.PositiveInfinity;
+            }
+            vertices[start].TotalCost = 0;
+
+            visited.Add(start);
+            Queue.Enqueue(start, 0);
+            while (Queue.Count > 0)
+            {
+                Vertex<T> curr = Queue.Dequeue();
+                foreach (Edge<T> edge in curr.Edges)
+                {
+                    if (!visited.Contains(edge.EndVertex))
+                    {
+                        Queue.Enqueue(edge.EndVertex, vertices[edge.EndVertex].TotalCost + heuristic(edge.EndVertex, end));
+                    }
+                }
+
+                if (curr == end)
+                {
+                    Stack<Vertex<T>> path = new Stack<Vertex<T>>();
+                    while (curr != null)
+                    {
+                        path.Push(curr);
+                        if (curr == start) break;
+                        curr = vertices[curr].FoundingEdge.StartVertex;
+                    }
+                    return path.ToList();
+                }
+                foreach (Edge<T> edge in curr.Edges)
+                {
+                    float altCost = vertices[curr].TotalCost + edge.Cost;
+                    if (altCost < vertices[edge.EndVertex].TotalCost)
+                    {
+                        vertices[edge.EndVertex].TotalCost = altCost;
+                        vertices[edge.EndVertex].FoundingEdge = edge;
+                        Queue.Enqueue(edge.EndVertex, altCost + heuristic(edge.EndVertex, end));
                     }
                 }
             }
