@@ -56,7 +56,6 @@ namespace Pathfinding
         {
             if (vertex == null) return false;
             if (!Vertices.Keys.Contains(vertex)) return false;
-            vertices.Remove(vertex);
             foreach (Edge<T> edge in Edges)
             {
                 if (edge.StartVertex == vertex || edge.EndVertex == vertex)
@@ -64,6 +63,7 @@ namespace Pathfinding
                     RemoveEdge(edge.StartVertex, edge.EndVertex);
                 }
             }
+            vertices.Remove(vertex);
             return true;
         }
 
@@ -205,7 +205,7 @@ namespace Pathfinding
                 Vertex<T> curr = Queue.Dequeue();
                 foreach (Edge<T> edge in curr.Edges)
                 {
-                    if (!visited.Contains(edge.EndVertex))
+                    if (!visited.Contains(edge.EndVertex) && !Queue.Contains(edge.EndVertex))
                     {
                         Queue.Enqueue(edge.EndVertex, vertices[edge.EndVertex].TotalCost + heuristic(edge.EndVertex, end));
                     }
@@ -229,7 +229,10 @@ namespace Pathfinding
                     {
                         vertices[edge.EndVertex].TotalCost = altCost;
                         vertices[edge.EndVertex].FoundingEdge = edge;
-                        Queue.Enqueue(edge.EndVertex, altCost + heuristic(edge.EndVertex, end));
+                        if (!Queue.Contains(edge.EndVertex))
+                        {
+                            Queue.Enqueue(edge.EndVertex, altCost + heuristic(edge.EndVertex, end));
+                        }
                     }
                 }
             }

@@ -50,6 +50,13 @@ namespace PathfindingVisualizer
                 {
                     rectangles[i, j] = new Rectangle(i * (screenWidth / GRIDSIZE), j * (screenWidth / GRIDSIZE), screenWidth / GRIDSIZE, screenHeight / GRIDSIZE);
                     graph.AddVertex(new Point(i, j));
+                    squares[i, j] = new Square<Point>(graph.Search(new Point(i, j)), rectangles[i, j]);
+                }
+            }
+            for (int i = 0; i < GRIDSIZE; i++)
+            {
+                for (int j = 0; j < GRIDSIZE; j++)
+                {
                     if (graph.Search(new Point(i + 1, j)) != null)
                     {
                         graph.AddEdge(graph.Search(new Point(i, j)), graph.Search(new Point(i + 1, j)), 1);
@@ -66,9 +73,6 @@ namespace PathfindingVisualizer
                     {
                         graph.AddEdge(graph.Search(new Point(i, j)), graph.Search(new Point(i, j - 1)), 1);
                     }
-                    squares[i, j] = new Square<Point>(graph.Search(new Point(i, j)), rectangles[i, j]);
-
-                    
                 }
             }
             // TODO: use this.Content to load your game content here
@@ -86,20 +90,20 @@ namespace PathfindingVisualizer
                     if (rectangles[i,j].Contains(mouseState.Position) && mouseState.RightButton == ButtonState.Pressed)
                     {
                         squares[i, j].State = SquareState.Wall;
-                        graph.RemoveVertex(squares[i, j].Vertex);
                         squares[i, j].Vertex.Edges.Clear();
+                        graph.RemoveVertex(squares[i, j].Vertex);
                     }
                     if (rectangles[i, j].Contains(mouseState.Position) && mouseState.LeftButton == ButtonState.Pressed)
                     {
                         if (startSquare == null)
                         {
                             startSquare = squares[i, j];
-                            startSquare.State = SquareState.Open;
+                            startSquare.State = SquareState.End;
                         }
                         else if (endSquare == null && squares[i, j] != startSquare)
                         {
                             endSquare = squares[i, j];
-                            endSquare.State = SquareState.Open;
+                            endSquare.State = SquareState.End;
                         }
                     }
                 }
@@ -108,6 +112,7 @@ namespace PathfindingVisualizer
             if (startSquare != null && endSquare != null)
             {
                 var path = graph.AStar(startSquare.Vertex, endSquare.Vertex, Manhattan);
+
                 foreach (var vertex in path)
                 {
                     var square = squares[vertex.Value.X, vertex.Value.Y];
@@ -138,6 +143,10 @@ namespace PathfindingVisualizer
                     if (squares[i, j].State == SquareState.Path)
                     {
                         spriteBatch.FillRectangle(rectangles[i, j], Color.Green);
+                    }
+                    if (squares[i,j].State == SquareState.End)
+                    {
+                        spriteBatch.FillRectangle(rectangles[i,j], Color.Red);
                     }
                 }
             }

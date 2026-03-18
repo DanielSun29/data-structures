@@ -13,6 +13,7 @@ namespace PathfindingVisualizer
         Unvisited,
         Open,
         Wall,
+        End,
         Path
     }
 
