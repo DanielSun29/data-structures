@@ -230,5 +230,39 @@ namespace Pathfinding
             }
             return path.ToList();
         }
+
+
+        public bool BellmanFord(Vertex<T> start)
+        {
+            if (start == null) return false;
+            if (!Vertices.Keys.Contains(start)) return false;
+            foreach (Vertex<T> vertex in vertices.Keys)
+            {
+                vertices[vertex].TotalCost = float.PositiveInfinity;
+            }
+            vertices[start].TotalCost = 0;
+            for (int i = 0; i < vertices.Count - 1; i++)
+            {
+                foreach (Edge<T> edge in Edges)
+                {
+                    float altCost = vertices[edge.StartVertex].TotalCost + edge.Cost;
+                    if (altCost < vertices[edge.EndVertex].TotalCost)
+                    {
+                        vertices[edge.EndVertex].TotalCost = altCost;
+                        vertices[edge.EndVertex].FoundingEdge = edge;
+                    }
+                }
+            }
+            // Check for negative weight cycles
+            foreach (Edge<T> edge in Edges)
+            {
+                float altCost = vertices[edge.StartVertex].TotalCost + edge.Cost;
+                if (altCost < vertices[edge.EndVertex].TotalCost)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
