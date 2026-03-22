@@ -92,6 +92,13 @@ namespace PathfindingVisualizer
                         squares[i, j].State = SquareState.Wall;
                         squares[i, j].Vertex.Edges.Clear();
                         graph.RemoveVertex(squares[i, j].Vertex);
+                        foreach(var square in squares)
+                        {
+                            if (square.State == SquareState.Path)
+                            {
+                                square.State = SquareState.Open;
+                            }
+                        }
                     }
                     if (rectangles[i, j].Contains(mouseState.Position) && mouseState.LeftButton == ButtonState.Pressed)
                     {
@@ -112,6 +119,8 @@ namespace PathfindingVisualizer
             if (startSquare != null && endSquare != null)
             {
                 var path = graph.AStar(startSquare.Vertex, endSquare.Vertex, Manhattan);
+
+                if (path == null) { return; }
 
                 foreach (var vertex in path)
                 {

@@ -200,28 +200,10 @@ namespace Pathfinding
 
             visited.Add(start);
             Queue.Enqueue(start, 0);
-            while (Queue.Count > 0)
+            while (!visited.Contains(end))
             {
+                if (Queue.Count == 0) return null; // No path found
                 Vertex<T> curr = Queue.Dequeue();
-                foreach (Edge<T> edge in curr.Edges)
-                {
-                    if (!visited.Contains(edge.EndVertex) && !Queue.Contains(edge.EndVertex))
-                    {
-                        Queue.Enqueue(edge.EndVertex, vertices[edge.EndVertex].TotalCost + heuristic(edge.EndVertex, end));
-                    }
-                }
-
-                if (curr == end)
-                {
-                    Stack<Vertex<T>> path = new Stack<Vertex<T>>();
-                    while (curr != null)
-                    {
-                        path.Push(curr);
-                        if (curr == start) break;
-                        curr = vertices[curr].FoundingEdge.StartVertex;
-                    }
-                    return path.ToList();
-                }
                 foreach (Edge<T> edge in curr.Edges)
                 {
                     float altCost = vertices[curr].TotalCost + edge.Cost;
@@ -235,8 +217,18 @@ namespace Pathfinding
                         }
                     }
                 }
+                visited.Add(curr);
             }
-            return null; // No path found
+
+            Stack<Vertex<T>> path = new Stack<Vertex<T>>();
+            var temp = end;
+            while (temp != null)
+            {
+                path.Push(temp);
+                if (temp == start) break;
+                temp = vertices[temp].FoundingEdge.StartVertex;
+            }
+            return path.ToList();
         }
     }
 }
