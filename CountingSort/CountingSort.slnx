@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CountingSort/CountingSort.csproj" />
+  <Project Path="CountingSortTest/CountingSortTest.csproj" />
+</Solution>
