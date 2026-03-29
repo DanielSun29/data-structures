@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="BucketSort/BucketSort.csproj" />
+  <Project Path="BucketSortTest/BucketSortTest.csproj" Id="161623f7-7b37-4ccc-b104-4dfde0001474" />
 </Solution>
