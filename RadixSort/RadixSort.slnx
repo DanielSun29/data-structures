@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="RadixSort/RadixSort.csproj" />
+  <Project Path="RadixSortTest/RadixSortTest.csproj" />
+</Solution>
