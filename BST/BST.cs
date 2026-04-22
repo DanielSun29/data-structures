@@ -9,7 +9,7 @@ namespace BST
 {
     public class BST<T> where T : IComparable<T> //Where T is comparable
     {
-        public int count = 0;
+        public int Count = 0;
 
         public Node<T> root;
 
@@ -20,7 +20,7 @@ namespace BST
         public BST(T rootValue)
         {
             root = new Node<T>(rootValue);
-            count = 1;
+            Count = 1;
         }
 
         public void RecursiveInsert(T value)
@@ -30,7 +30,7 @@ namespace BST
                 throw new NullReferenceException("value is null");
             }
             root = RecursiveInsertHelper(root, value);
-            count++;
+            Count++;
         }
 
         private Node<T> RecursiveInsertHelper(Node<T> curr, T value)
@@ -64,10 +64,10 @@ namespace BST
             {
                 throw new ArgumentNullException("value");
             }
-            if (count == 0)
+            if (Count == 0)
             {
                 root = new Node<T>(value);
-                count++;
+                Count++;
                 return;
             }
 
@@ -104,7 +104,7 @@ namespace BST
                     }
                 }
             }
-            count++;
+            Count++;
         }
 
 
@@ -114,7 +114,7 @@ namespace BST
             {
                 throw new ArgumentNullException("value");
             }
-            if (count == 0)
+            if (Count == 0)
             {
                 throw new NullReferenceException("Tree is empty");
             }
@@ -238,6 +238,10 @@ namespace BST
             return list;
         }
 
+        public List<T> InOrderRec ()
+        {
+            return InOrderRec(root);
+        }
         public List<T> InOrderRec(Node<T> curr)
         {
             List<T> list = new List<T>();
@@ -312,7 +316,7 @@ namespace BST
             Stack<Node<T>> movement = new Stack<Node<T>>();
             Queue<T> output = new Queue<T>();
             Node<T> curr = root;
-            while (count != output.Count)
+            while (Count != output.Count)
             {
                 if (curr != null)
                 {
@@ -338,7 +342,7 @@ namespace BST
             if (root.Value.Equals(value))
             {
                 root = Remove(root);
-                count--;
+                Count--;
                 return true;
             }
 
@@ -379,7 +383,7 @@ namespace BST
         {
             if (nodeToRemove == null) throw new NullReferenceException("Node to Remove is null");
 
-            count--;
+            Count--;
 
             if (nodeToRemove.Left == null) return nodeToRemove.Right;
             if (nodeToRemove.Right == null) return nodeToRemove.Left;
