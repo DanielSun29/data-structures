@@ -11,6 +11,8 @@ namespace HuffmanCoding
 
         Dictionary<char, int> frequencies;
 
+        Node Tree;
+
         public HuffmanAlgo(string text)
         {
             priorityQueue = new PriorityQueue<Node, int>();
@@ -35,7 +37,7 @@ namespace HuffmanCoding
             return frequencies;
         }
 
-        public Dictionary<char, byte[]> BuildHuffmanTree(Dictionary<char, int> frequencies)
+        public Dictionary<char, byte[]> BuildHuffmanTree(Dictionary<char, int> frequencies) // Builds the huffman tree and generates the huffman codes for each character in the input string
         {
             foreach (var kvp in frequencies)
             {
@@ -54,11 +56,13 @@ namespace HuffmanCoding
             }
             var root = priorityQueue.Dequeue();
 
+            Tree = root;
+
             var huffmanCodes = GenerateHuffmanCodes(root, new List<byte>());
             return huffmanCodes;
         }
 
-        private Dictionary<char, byte[]> GenerateHuffmanCodes(Node node, List<byte> currentCode)
+        private Dictionary<char, byte[]> GenerateHuffmanCodes(Node node, List<byte> currentCode) // recursive function to generate huffman codes with a tree
         {
             var huffmanCodes = new Dictionary<char, byte[]>();
             if (node.Left == null && node.Right == null)
@@ -76,7 +80,7 @@ namespace HuffmanCoding
             }
             if (node.Right != null)
             {
-                List<byte> rightCode = [..currentCode, 1];
+                List<byte> rightCode = [.. currentCode, 1];
                 foreach (var kvp in GenerateHuffmanCodes(node.Right, rightCode))
                 {
                     huffmanCodes[kvp.Key] = kvp.Value;
@@ -99,10 +103,36 @@ namespace HuffmanCoding
                 }
                 else
                 {
-                   throw new Exception("Char not in dictionary");
+                    throw new Exception("Char not in dictionary");
                 }
             }
             return encodedData.ToArray();
+        }
+
+        public string Decode(byte[] encodedData) => Decode(encodedData, BuildHuffmanTree(frequencies));
+        public string Decode(byte[] encodedData, Dictionary<char, byte[]> huffmanCodes)
+        {
+            StringBuilder decodedString = new StringBuilder();
+            List<byte> currentCode = encodedData.ToList();
+            Node curr = Tree;
+            foreach (var c in currentCode)
+            {
+                if (c == 0)
+                {
+                    curr = curr.Left;
+                }
+                else
+                {
+                    curr = curr.Right;
+                }
+                if (curr.Left is null && curr.Right is null)
+                {
+                    decodedString.Append(curr.Character);
+                    curr = Tree;
+                }
+            }
+
+            return decodedString.ToString();
         }
     }
 }
