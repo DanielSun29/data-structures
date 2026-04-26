@@ -17,8 +17,20 @@ namespace BurstTrie
 
         public override BurstNode Insert(string value, int index)
         {
-           tree.RecursiveInsert(value);
-           return this;
+            if (Count > ParentTrie.max)
+            {
+                InternalNode tempInternal = new InternalNode(ParentTrie);
+                var nodes = tree.InOrderRec();
+                foreach (var node in nodes)
+                {
+                    tempInternal.Insert(node, index + 1);
+                }
+                tempInternal.Insert(value, index + 1);
+                return tempInternal;
+            }
+
+            tree.RecursiveInsert(value);
+            return this;
         }
 
         public override BurstNode? Remove(string value, int index, out bool success)
@@ -29,7 +41,18 @@ namespace BurstTrie
 
         public override BurstNode? Search(string prefix, int index)
         {
-            return tree.Search(prefix) != null ? this : null;
+            var temp = tree.Search(prefix);
+            if (temp is not null) return new ContainerNode(this.ParentTrie).Insert(temp.Value, index);
+            var values = tree.InOrderRec();
+            var node= new ContainerNode(this.ParentTrie);
+            foreach (var value in values)
+            {
+                if (value.StartsWith(prefix))
+                {
+                    node.Insert(value, index);
+                }
+            }
+            return node;
         }
 
         internal override void GetAll(List<string> output)
