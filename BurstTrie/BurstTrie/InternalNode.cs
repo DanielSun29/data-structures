@@ -6,7 +6,7 @@ namespace BurstTrie
 {
     public class InternalNode : BurstNode
     {
-        public InternalNode(BurstTrie parent) : base(parent)
+        public InternalNode(TheBurstTrie parent) : base(parent)
         {
         }
 
@@ -36,6 +36,7 @@ namespace BurstTrie
                 children[c - 'a'] = new ContainerNode(ParentTrie);
             }
             children[c - 'a'].Insert(value, index + 1);
+
             return this;
         }
 
@@ -43,7 +44,7 @@ namespace BurstTrie
         {
             char c = value[index];
 
-            if (Count < ParentTrie.max)
+            if (Count < ParentTrie.max && index > 0)
             {
                 // Unburst
                 ContainerNode newNode = new ContainerNode(ParentTrie);

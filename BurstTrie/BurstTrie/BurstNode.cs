@@ -4,11 +4,11 @@
     public abstract class BurstNode
     {
         // The Trie this node belongs to
-        internal BurstTrie ParentTrie;
+        internal TheBurstTrie ParentTrie;
         // The amount of values contained in this node
         public abstract int Count { get; }
         // Creates the Node referencing its parent-trie
-        protected BurstNode(BurstTrie parent) => ParentTrie = parent;
+        protected BurstNode(TheBurstTrie parent) => ParentTrie = parent;
 
         // Abstract recursive insertion function, returns replacement value for back-propagation 
         public abstract BurstNode Insert(string value, int index);
@@ -19,5 +19,4 @@
         // Gets all items in order recursively
         internal abstract void GetAll(List<string> output);
     }
-
 }

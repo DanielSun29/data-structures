@@ -7,7 +7,7 @@ namespace BurstTrie
 {
     public class ContainerNode : BurstNode
     {
-        public ContainerNode(BurstTrie parent) : base(parent)
+        public ContainerNode(TheBurstTrie parent) : base(parent)
         {
         }
 
@@ -52,6 +52,7 @@ namespace BurstTrie
                     node.Insert(value, index);
                 }
             }
+            if (node.Count <= 0) return null;
             return node;
         }
 

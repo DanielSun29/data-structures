@@ -116,7 +116,7 @@ namespace BST
             }
             if (Count == 0)
             {
-                throw new NullReferenceException("Tree is empty");
+                return null;
             }
 
             Node<T> curr = root;
@@ -383,7 +383,7 @@ namespace BST
         {
             if (nodeToRemove == null) throw new NullReferenceException("Node to Remove is null");
 
-            Count--;
+            // Count--;
 
             if (nodeToRemove.Left == null) return nodeToRemove.Right;
             if (nodeToRemove.Right == null) return nodeToRemove.Left;
