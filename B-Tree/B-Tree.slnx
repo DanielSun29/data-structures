@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="B-Tree/B-Tree.csproj" />
+  <Project Path="BTreeTest/BTreeTest.csproj" Id="fac782a9-3bbf-456e-90e7-20c76c93d172" />
 </Solution>
