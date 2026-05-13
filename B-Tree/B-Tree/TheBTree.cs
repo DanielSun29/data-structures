@@ -72,7 +72,7 @@ namespace B_Tree
 
 
             // Check if children is null or it will explode
-            if (node.children[i].keys.Count == 3)
+            if (node.children.Count > 0 && node.children[i].keys.Count == 3)
             {
                 node = InternalSplit(node, i);
             }
@@ -94,9 +94,11 @@ namespace B_Tree
         private Node<T> InternalSplit(Node<T> node, int splitIndex)
         {
             Node<T> newNode = node;
-            newNode.keys.Insert(splitIndex, node.children[splitIndex].keys[1]);
+            Node<T> childToSplit = node.children[splitIndex]; 
+            newNode.keys.Insert(splitIndex, childToSplit.keys[1]);
 
-            newNode.children[splitIndex].keys.RemoveAt(1);
+            node.children[splitIndex] = new Node<T>(childToSplit.keys[0]);
+            node.children.Insert(splitIndex + 1, new Node<T>(childToSplit.keys[2]));
 
             return newNode;
         }

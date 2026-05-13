@@ -14,5 +14,12 @@ namespace B_Tree
             children = new List<Node<T>>();
             keys = new List<T>();
         }
+
+        public Node(T value)
+        {
+            children = new List<Node<T>>();
+            keys = new List<T>();
+            keys.Add(value);
+        }
     }
 }
