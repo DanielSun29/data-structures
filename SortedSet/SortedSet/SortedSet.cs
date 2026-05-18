@@ -7,7 +7,7 @@ namespace SortedSet
 {
     public class SortedSet<T> : ISortedSet<T>
     {
-        public IComparer<T> Comparer => throw new NotImplementedException();
+        public IComparer<T> Comparer { get; set; }
 
         public int Count => throw new NotImplementedException();
 
