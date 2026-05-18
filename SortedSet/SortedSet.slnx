@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../RedBlackTree/RedBlackTree/RedBlackTree.csproj" />
+  <Project Path="SortedSet/SortedSet.csproj" />
+</Solution>
