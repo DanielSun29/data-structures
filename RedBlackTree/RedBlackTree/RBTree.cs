@@ -145,6 +145,23 @@ namespace RedBlackTree
             node.Right = Delete(node.Right, min.Value);
         }
 
+        public List<T> Recursion()
+        {
+            return InOrderRec(Root);
+        }
+        public List<T> InOrderRec(Node<T> curr)
+        {
+            List<T> list = new List<T>();
+            if (curr == null)
+            {
+                return list;
+            }
+            list.AddRange(InOrderRec(curr.Left));
+            list.Add(curr.Value);
+            list.AddRange(InOrderRec(curr.Right));
+            return list;
+        }
+
         private Node<T> FixUp(Node<T> node)
         {
             if (isRed(node.Right) && !isRed(node.Left))
