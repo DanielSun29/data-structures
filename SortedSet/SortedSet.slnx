@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="../RedBlackTree/RedBlackTree/RedBlackTree.csproj" />
   <Project Path="SortedSet/SortedSet.csproj" />
+  <Project Path="SortedSetTest/SortedSetTest.csproj" Id="7ea3467a-6520-4516-a74d-88fb55e87b66" />
 </Solution>

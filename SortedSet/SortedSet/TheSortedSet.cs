@@ -6,17 +6,21 @@ using RedBlackTree;
 
 namespace SortedSet
 {
-    public class SortedSet<T> : ISortedSet<T> where T : IComparable<T>
+    public class TheSortedSet<T> : ISortedSet<T> where T : IComparable<T>
     {
 
         private RBTree<T> tree;
 
         public IComparer<T> Comparer { get; set; }
 
-        public int Count => throw new NotImplementedException();
+        public int Count => tree == null ? 0 : tree.Recursion().Count;
 
         public bool Add(T item)
         {
+           if (tree == null)
+           {
+                tree = new RBTree<T>();
+           }
            if (tree.Contains(item))
            {
                 return false;
@@ -27,6 +31,10 @@ namespace SortedSet
 
         public void AddRange(IEnumerable<T> items)
         {
+            if (tree == null)
+            {
+                tree = new RBTree<T>();
+            }
             foreach (var item in items)
             {
                 if (!tree.Contains(item))
@@ -40,7 +48,7 @@ namespace SortedSet
         {
             List<T> list = tree.Recursion();
             int i = 0;
-            while (item.CompareTo(list[i]) <= 0)
+            while (item.CompareTo(list[i]) > 0)
             {
                 i++;
             }
@@ -61,7 +69,7 @@ namespace SortedSet
         {
             List<T> list = tree.Recursion();
             int i = 0;
-            while (item.CompareTo(list[i]) <= 0)
+            while (item.CompareTo(list[i]) > 0)
             {
                 i++;
             }
@@ -79,7 +87,7 @@ namespace SortedSet
 
         public ISortedSet<T> Intersection(ISortedSet<T> other)
         {
-            SortedSet<T> output = new SortedSet<T>();
+            TheSortedSet<T> output = new TheSortedSet<T>();
             foreach (T item in other)
             {
                 if (tree.Contains(item))
@@ -130,7 +138,7 @@ namespace SortedSet
                     result.Insert(item);
                 }
             }
-            SortedSet<T> output = new SortedSet<T>();
+            TheSortedSet<T> output = new TheSortedSet<T>();
             output.tree = result;
             return output;
         }
